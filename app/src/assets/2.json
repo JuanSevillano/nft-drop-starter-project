@@ -1,0 +1,23 @@
+{
+    "name": "Pre-columbian art 2",
+    "symbol": "",
+    "image": "./2.png",
+    "collection": {
+        "name": "Pre-columbian art 2",
+        "family": "Pre-Columbian"
+    },
+    "properties": {
+        "files": [
+            {
+                "uri": "./2.png",
+                "type": "image/png"
+            }
+        ],
+        "creators": [
+            {
+                "address": "39hn5oynp87XMa8SpBVscp4cBfoZrA9NLymja9cwqEmh",
+                "share": 100
+            }
+        ]
+    }
+}

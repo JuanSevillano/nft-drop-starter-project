@@ -40,6 +40,11 @@ const App = () => {
   }
 
 
+  const goGithubHandler = () => {
+    window.open('https://github.com/JuanSevillano')
+  }
+
+
   const connectWallet = async () => {
 
     const { solana } = window;
@@ -77,8 +82,17 @@ const App = () => {
     <div className="App">
       <div className="container">
         <div className="header-container">
-          <p className="header">🍭 Sevi's First Drop #BuildSpace</p>
-          <p className="sub-text">NFT drop machine with fair mint</p>
+          <span className="header">
+
+            <h1 onClick={goGithubHandler} className='brand'>Sev <span>i</span></h1>
+            <p
+              onClick={() => {
+                window.open('https://twitter.com/_buildspace');
+                // Thanks to _builspace for this and its awsome community 
+              }}
+              style={{ pointer: 'pointer' }}
+              className="sub-text">🍭 FIRST DROP #BUILDSPACE</p>
+          </span>
           {!walletAddress && renderNotConnectedContainer()}
         </div>
 
@@ -86,6 +100,7 @@ const App = () => {
         <div className="footer-container">
           <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
           <a
+            style={{ color: 'black ', margin: '20px' }}
             className="footer-text"
             href={TWITTER_LINK}
             target="_blank"

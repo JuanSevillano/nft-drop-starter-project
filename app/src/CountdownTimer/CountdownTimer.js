@@ -42,6 +42,7 @@ const CountdownTimer = ({ dropDate, goLiveDateTimeString }) => {
                 clearInterval(interval);
             }
         };
+         // eslint-disable-next-line
     }, []);
 
 
@@ -54,7 +55,7 @@ const CountdownTimer = ({ dropDate, goLiveDateTimeString }) => {
         return (
             <div className="timer-container">
                 <p className="timer-header">Candy Drop Starting In</p>
-                {timerString && <p className="timer-value">{`⏰ ${timerString}`}</p>}
+                {timerString && <p className="timer-value">{` Candy Drop Starting In ⏰ ${timerString}`}</p>}
             </div>
         );
     }

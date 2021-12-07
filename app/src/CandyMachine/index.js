@@ -126,16 +126,6 @@ const CandyMachine = ({ walletAddress }) => {
 
 
 
-
-  useEffect(() => {
-
-    if (mints.length > 0) {
-      debugger
-    }
-
-  }, [mints])
-
-
   // This could be in another file as a FC. 
   const renderMintedItems = (
     <div className="gif-container">
@@ -388,19 +378,19 @@ const CandyMachine = ({ walletAddress }) => {
     machineStats && (
       <div className="machine-container">
         <CountdownTimer dropDate={dropDate} goLiveDateTimeString={machineStats.goLiveDateTimeString} />
-
-        <p>{`Items Minted: ${machineStats.itemsRedeemed} / ${machineStats.itemsAvailable}`}</p>
-
         {machineStats.itemsRedeemed === machineStats.itemsAvailable ? (
-          <p className="sub-text">Sold Out 🙊</p>
+          <p className="sub-text"> {`Items Minted: ${machineStats.itemsRedeemed} / ${machineStats.itemsAvailable}`} Sold Out 🙊</p>
         ) : (
-          <button
-            className="cta-button mint-button"
-            onClick={mintToken}
-            disabled={isMinting}
-          >
-            Mint NFT
-          </button>
+          <>
+            <p className="sub-text">{`Items Minted: ${machineStats.itemsRedeemed} / ${machineStats.itemsAvailable}`}</p>
+            <button
+              className="cta-button mint-button"
+              onClick={mintToken}
+              disabled={isMinting}
+            >
+              Mint NFT
+            </button>
+          </>
         )}
         { /* Rendering items  */}
         {isLoadingMints && <p>LOADING MINTS...</p>}

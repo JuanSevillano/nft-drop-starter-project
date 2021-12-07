@@ -1,0 +1,70 @@
+import React, { useEffect, useState } from 'react';
+import './CountdownTimer.css';
+
+const CountdownTimer = ({ dropDate, goLiveDateTimeString }) => {
+
+
+    // State
+    const [timerString, setTimerString] = useState('');
+
+    const currentDate = new Date();
+
+    // Our useEffect will run on component load
+    useEffect(() => {
+        console.log('Setting interval...');
+
+        // Use setInterval to run this piece of code every second
+        const interval = setInterval(() => {
+            const currentDate = new Date().getTime();
+            const distance = dropDate - currentDate;
+
+            // Here it's as easy as doing some time math to get the different properties
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor(
+                (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+            );
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // We have our desired output, set it in state!
+            setTimerString(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+
+            // If our distance passes zero this means that it's drop time!
+            if (distance < 0) {
+                console.log('Clearing interval...');
+                clearInterval(interval);
+            }
+        }, 1000);
+
+        // Anytime our component unmounts let's clean up our interval
+        return () => {
+            if (interval) {
+                clearInterval(interval);
+            }
+        };
+    }, []);
+
+
+
+
+    // If currentDate is before dropDate, render our Countdown component
+    if (currentDate < dropDate) {
+        console.log('Before drop date!');
+        // Don't forget to pass over your dropDate!
+        return (
+            <div className="timer-container">
+                <p className="timer-header">Candy Drop Starting In</p>
+                {timerString && <p className="timer-value">{`⏰ ${timerString}`}</p>}
+            </div>
+        );
+    }
+    else {
+        // Else let's just return the current drop date
+        return <p className="timer-value"> The drop started:  {timerString} ⏰</p>;
+    }
+
+
+
+};
+
+export default CountdownTimer;

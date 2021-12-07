@@ -9,6 +9,7 @@ import {
   TOKEN_METADATA_PROGRAM_ID,
   SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID,
 } from './helpers';
+import CountdownTimer from '../CountdownTimer/CountdownTimer';
 
 
 
@@ -36,6 +37,11 @@ const CandyMachine = ({ walletAddress }) => {
 
   const [mints, setMints] = useState([]);
 
+  const [isMinting, setIsMinting] = useState(false);
+  const [isLoadingMints, setIsLoadingMints] = useState(false);
+
+
+  const dropDate = new Date(machineStats?.goLiveData * 1000);
 
 
   const getProvider = () => {
@@ -51,6 +57,9 @@ const CandyMachine = ({ walletAddress }) => {
   }
 
   const getCandyMachineState = async () => {
+
+    setIsLoadingMints(true);
+
     // Creds + Provider (connection)
     const provider = getProvider();
 
@@ -93,25 +102,20 @@ const CandyMachine = ({ walletAddress }) => {
         const response = await fetch(mint.data.uri);
         const { properties } = await response.json();
 
-
-        // Best practice for me is next line :
-        const { uri } = response;
-
         const { files } = properties;
         const imageURI = files[0].uri;
 
         console.log('Past minted NFT in clients wallet, metadata is in Solanas blockchain ', mint);
-
-        debugger
         // Not mints found in useState then put it in. 
-        if (!mints.find(minted => minted === uri)) {
-          setMints(prev => [...prev, uri]);
+        if (!mints.find(minted => minted === imageURI)) {
+          setMints(prev => [...prev, imageURI]);
         }
 
       }
     }
 
-  }
+    setIsLoadingMints(false);
+  };
 
   useEffect(() => {
 
@@ -231,6 +235,8 @@ const CandyMachine = ({ walletAddress }) => {
 
   const mintToken = async () => {
     try {
+
+      setIsMinting(true);
       const mint = web3.Keypair.generate();
       const token = await getTokenWallet(
         walletAddress.publicKey,
@@ -310,17 +316,23 @@ const CandyMachine = ({ walletAddress }) => {
         txn,
         async (notification, context) => {
           if (notification.type === 'status') {
+
             console.log('Receievd status event');
 
             const { result } = notification;
+
             if (!result.err) {
               console.log('NFT Minted!');
+              setIsMinting(true)
+              await getCandyMachineState();
             }
           }
         },
         { commitment: 'processed' }
       );
     } catch (error) {
+
+      setIsMinting(false);
       let message = error.msg || 'Minting failed! Please try again!';
 
       if (!error.msg) {
@@ -375,12 +387,23 @@ const CandyMachine = ({ walletAddress }) => {
   return (
     machineStats && (
       <div className="machine-container">
-        <p>{`Drop Date: ${machineStats.goLiveDateTimeString}`}</p>
+        <CountdownTimer dropDate={dropDate} goLiveDateTimeString={machineStats.goLiveDateTimeString} />
+
         <p>{`Items Minted: ${machineStats.itemsRedeemed} / ${machineStats.itemsAvailable}`}</p>
-        <button className="cta-button mint-button" onClick={mintToken}>
-          Mint NFT
-        </button>
+
+        {machineStats.itemsRedeemed === machineStats.itemsAvailable ? (
+          <p className="sub-text">Sold Out 🙊</p>
+        ) : (
+          <button
+            className="cta-button mint-button"
+            onClick={mintToken}
+            disabled={isMinting}
+          >
+            Mint NFT
+          </button>
+        )}
         { /* Rendering items  */}
+        {isLoadingMints && <p>LOADING MINTS...</p>}
         {mints.length > 0 && renderMintedItems}
       </div>
     )

@@ -1,15 +1,11 @@
 {
     "name": "Pre-columbian art 2",
     "symbol": "",
-    "image": "./2.png",
-    "collection": {
-        "name": "Pre-columbian art 2",
-        "family": "Pre-Columbian"
-    },
+    "image": "2.png",
     "properties": {
         "files": [
             {
-                "uri": "./2.png",
+                "uri": "2.png",
                 "type": "image/png"
             }
         ],

@@ -9,6 +9,10 @@ import {
   TOKEN_METADATA_PROGRAM_ID,
   SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID,
 } from './helpers';
+
+
+
+
 const {
   metadata: { Metadata, MetadataProgram },
 } = programs;
@@ -26,7 +30,11 @@ const MAX_CREATOR_LEN = 32 + 1 + 1;
 
 const CandyMachine = ({ walletAddress }) => {
 
+  // All the my candy machine data => items.available and all metadata  
   const [machineStats, setMachineStats] = useState(null);
+
+
+  const [mints, setMints] = useState([]);
 
 
 
@@ -73,11 +81,70 @@ const CandyMachine = ({ walletAddress }) => {
     });
 
 
+    const data = await fetchHashTable(
+      process.env.REACT_APP_CANDY_MACHINE_ID,
+      true
+    )
+
+    if (data.length !== 0) {
+      for (const mint of data) {
+
+        // Getting URI
+        const response = await fetch(mint.data.uri);
+        const { properties } = await response.json();
+
+
+        // Best practice for me is next line :
+        const { uri } = response;
+
+        const { files } = properties;
+        const imageURI = files[0].uri;
+
+        console.log('Past minted NFT in clients wallet, metadata is in Solanas blockchain ', mint);
+
+        debugger
+        // Not mints found in useState then put it in. 
+        if (!mints.find(minted => minted === uri)) {
+          setMints(prev => [...prev, uri]);
+        }
+
+      }
+    }
+
   }
 
   useEffect(() => {
+
     getCandyMachineState()
-  }, [])
+
+    // eslint-disable-next-line
+  }, []);
+
+
+
+
+  useEffect(() => {
+
+    if (mints.length > 0) {
+      debugger
+    }
+
+  }, [mints])
+
+
+  // This could be in another file as a FC. 
+  const renderMintedItems = (
+    <div className="gif-container">
+      <p className="sub-text">Minted Items ✨</p>
+      <div className="gif-grid">
+        {mints.map((mint) => (
+          <div className="gif-item" key={mint}>
+            <img src={mint} alt={`Minted NFT ${mint}`} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
 
   // Actions
@@ -313,6 +380,8 @@ const CandyMachine = ({ walletAddress }) => {
         <button className="cta-button mint-button" onClick={mintToken}>
           Mint NFT
         </button>
+        { /* Rendering items  */}
+        {mints.length > 0 && renderMintedItems}
       </div>
     )
   );

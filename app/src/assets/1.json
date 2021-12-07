@@ -1,15 +1,11 @@
 {
     "name": "Pre-columbian art spain 1",
     "symbol": "",
-    "image": "./1.png",
-    "collection": {
-        "name": "Pre-columbian art 1",
-        "family": "Pre-Columbian"
-    },
+    "image": "1.png",
     "properties": {
         "files": [
             {
-                "uri": "./1.png",
+                "uri": "1.png",
                 "type": "image/png"
             }
         ],
